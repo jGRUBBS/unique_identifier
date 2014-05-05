@@ -1,4 +1,5 @@
 require "unique_identifier/version"
+require "rails"
 
 module UniqueIdentifier
 
@@ -35,7 +36,6 @@ module UniqueIdentifier
   end
 
   if defined? Rails::Railtie
-    require 'rails'
 
     class Railtie < Rails::Railtie
       initializer 'unique_identifier.insert_into_active_record' do
