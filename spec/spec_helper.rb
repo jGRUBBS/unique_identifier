@@ -10,13 +10,14 @@ UniqueIdentifier::Railtie.insert
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 
 RSpec.configure do |config|
-  
+
   config.before(:all) do
     m = ActiveRecord::Migration.new
-    m.verbose = false  
-    m.create_table :dummy_models do |t| 
+    m.verbose = false
+    m.create_table :dummy_models do |t|
       t.string :number
-    end  
+      t.string :type
+    end
   end
 
   config.after(:all) do
@@ -39,14 +40,11 @@ def build_class(name, options = {})
   # Set class as a constant
   klass = Object.const_set(class_name, Class.new(ActiveRecord::Base))
 
-  klass.const_set("MODE", "test")
-
   klass.class_eval do
-    include UniqueIdentifier::Glue
 
-    unique_identifier name, options
+    unique_id name, options
 
   end
-  
+
   klass
 end

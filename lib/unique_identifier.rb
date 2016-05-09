@@ -6,14 +6,14 @@ module UniqueIdentifier
   module ClassMethods
 
     mattr_accessor :field, :block, :klass
-  
+
     def unique_id(field, block)
       @klass = self.name.constantize
       @klass.const_set('BLOCK', block)
       @klass.const_set('FIELD', field)
       @klass.set_callback(:create, :before, :generate_unique_id)
     end
-  
+
   end
 
   module InstanceMethods
@@ -21,7 +21,9 @@ module UniqueIdentifier
       return if self.send(self.class::FIELD)
       identifier = loop do
         random = self.class::BLOCK.call
-        break random unless self.class.exists?(self.class::FIELD => random)
+        unless self.class.base_class.exists?(self.class::FIELD => random)
+          break random
+        end
       end
       self.send "#{self.class::FIELD}=", identifier
     end
