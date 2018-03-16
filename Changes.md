@@ -1,4 +1,4 @@
-HEAD
+0.0.4
 --------
 **Fixes**
 - PR #1 - updates `before_create` call back to `before_validation, on: :create`
