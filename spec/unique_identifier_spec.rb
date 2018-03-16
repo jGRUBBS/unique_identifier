@@ -5,17 +5,41 @@ describe UniqueIdentifier do
 
     context "callbacks" do
 
-      before do
-        DummyModel = build_class(
-          :number,
-          Proc.new { "R#{Array.new(9) { rand(9) }.join}" }
-        )
+      context "when unique_id attribute +is not+ validated" do
+        before do
+          DummyModel = build_dummy_class(
+            :number,
+            Proc.new { "R#{Array.new(9) { rand(9) }.join}" }
+          )
+        end
+
+        let(:model) { DummyModel.create }
+
+        it "populates the specified field on create" do
+          expect(model.number).to match(/R\d{9}/)
+        end
       end
 
-      let(:model) { DummyModel.create }
+      context "when unique_id attribute +is+ validated" do
+        before do
+          DummyModel = build_dummy_class(
+            :number,
+            Proc.new { "R#{Array.new(9) { rand(9) }.join}" },
+            validate: true
+          )
+        end
 
-      it "populates the specified field on create" do
-        expect(model.number).to match(/R\d{9}/)
+        let(:model) { DummyModel.create }
+
+        it "populates the specified field before any validations, on create" do
+          expect(model.number).to match(/R\d{9}/)
+        end
+
+        it "creates a valid instance" do
+          expect(model.valid?).to be_truthy
+          expect(model.errors).to be_empty
+        end
+
       end
 
     end
@@ -24,7 +48,7 @@ describe UniqueIdentifier do
 
       before do
         i = -1
-        DummyModel = build_class(:number, Proc.new { i += 1 })
+        DummyModel = build_dummy_class(:number, Proc.new { i += 1 })
         class InheritedModel < DummyModel
           x = -1
           unique_id :number, Proc.new { x += 1 }

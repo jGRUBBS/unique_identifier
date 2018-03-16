@@ -8,10 +8,9 @@ module UniqueIdentifier
     mattr_accessor :field, :block, :klass
 
     def unique_id(field, block)
-      @klass = self.name.constantize
-      @klass.const_set('BLOCK', block)
-      @klass.const_set('FIELD', field)
-      @klass.set_callback(:create, :before, :generate_unique_id)
+      const_set('BLOCK', block)
+      const_set('FIELD', field)
+      before_validation :generate_unique_id, on: :create
     end
 
   end
