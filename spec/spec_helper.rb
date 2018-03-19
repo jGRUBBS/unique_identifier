@@ -54,3 +54,7 @@ def build_dummy_base_class
   klass = Object.const_set(class_name, Class.new(ActiveRecord::Base))
   klass
 end
+
+def basic_random_proc
+  Proc.new { "R#{Array.new(9) { rand(9) }.join}" }
+end
