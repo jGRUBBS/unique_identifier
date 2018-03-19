@@ -23,12 +23,12 @@ Or install it yourself as:
   class SomeModel < ActiveRecord::Base
 
     # name of column to store unique identifier
-    #            | 
+    #            |
     #         -------
     unique_id :number, -> { Array.new(9) { rand(9) }.join }
     #                  ------------------------------------
     #                                    |
-    # proc to be run before_create to generate unique identifier
+    # proc to be run `before_validation, on: :create` to generate unique identifier
 
   end
 
@@ -45,7 +45,7 @@ The above example is equivalent to this:
 
   class SomeModel < ActiveRecord::Base
 
-    before_create :generate_unique_id
+    before_validation :generate_unique_id, on: :create
 
     def generate_unique_id
       self.number = loop do

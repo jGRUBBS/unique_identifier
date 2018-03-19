@@ -29,7 +29,7 @@ RSpec.configure do |config|
 end
 
 
-def build_class(name, options = {})
+def build_dummy_class(unique_attr_name, unique_options = {}, class_options = {})
   # setup class and include delayed_cron
 
   class_name = "DummyModel"
@@ -42,8 +42,11 @@ def build_class(name, options = {})
 
   klass.class_eval do
 
-    unique_id name, options
+    unique_id unique_attr_name, unique_options
 
+    if class_options.fetch(:validate, false)
+      validates unique_attr_name, presence: true
+    end
   end
 
   klass
