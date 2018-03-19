@@ -3,6 +3,32 @@ require 'spec_helper'
 describe UniqueIdentifier do
   describe ".unique_identifier" do
 
+    context "instance methods" do
+      context "when unique_id is not called on class" do
+        before do
+          DummyModel = build_dummy_base_class
+        end
+
+        let(:model) { DummyModel.create }
+
+        it "does not include instance methods on the class" do
+          expect(model.respond_to?(:generate_unique_id)).to be_falsy
+        end
+      end
+
+      context "when unique_id is called on class" do
+        before do
+          DummyModel = build_dummy_class(:number, basic_random_proc)
+        end
+
+        let(:model) { DummyModel.create }
+
+        it "does not include instance methods on the class" do
+          expect(model.respond_to?(:generate_unique_id)).to be_truthy
+        end
+      end
+    end
+
     context "callbacks" do
 
       context "when unique_id attribute +is not+ validated" do
