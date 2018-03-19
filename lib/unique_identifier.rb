@@ -5,6 +5,7 @@ module UniqueIdentifier
 
   module ClassMethods
 
+    # FIX ME: Are these needed?
     mattr_accessor :field, :block, :klass
 
     def unique_id(field, block)
