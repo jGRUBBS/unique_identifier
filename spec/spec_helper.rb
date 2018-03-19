@@ -29,19 +29,11 @@ RSpec.configure do |config|
 end
 
 
-def build_dummy_class(unique_attr_name, unique_options = {}, class_options = {})
-  # setup class and include delayed_cron
-
-  class_name = "DummyModel"
-
-  ActiveRecord::Base.send(:include, UniqueIdentifier::Glue)
-  Object.send(:remove_const, class_name) rescue nil
-
-  # Set class as a constant
-  klass = Object.const_set(class_name, Class.new(ActiveRecord::Base))
+def build_dummy_class(unique_attr_name = nil, unique_options = {}, class_options = {})
+  # setup class and include unique_identifier
+  klass = build_dummy_base_class
 
   klass.class_eval do
-
     unique_id unique_attr_name, unique_options
 
     if class_options.fetch(:validate, false)
@@ -50,4 +42,19 @@ def build_dummy_class(unique_attr_name, unique_options = {}, class_options = {})
   end
 
   klass
+end
+
+def build_dummy_base_class
+  class_name = "DummyModel"
+
+  ActiveRecord::Base.send(:include, UniqueIdentifier::Glue)
+  Object.send(:remove_const, class_name) rescue nil
+
+  # Set class as a constant
+  klass = Object.const_set(class_name, Class.new(ActiveRecord::Base))
+  klass
+end
+
+def basic_random_proc
+  Proc.new { "R#{Array.new(9) { rand(9) }.join}" }
 end

@@ -11,6 +11,7 @@ module UniqueIdentifier
       const_set('BLOCK', block)
       const_set('FIELD', field)
       before_validation :generate_unique_id, on: :create
+      include InstanceMethods
     end
 
   end
@@ -32,7 +33,6 @@ module UniqueIdentifier
   module Glue
     def self.included(base)
       base.extend(ClassMethods)
-      base.send :include, InstanceMethods
     end
   end
 
