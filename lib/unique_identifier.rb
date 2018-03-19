@@ -5,11 +5,13 @@ module UniqueIdentifier
 
   module ClassMethods
 
+    # FIX ME: Are these needed?
     mattr_accessor :field, :block, :klass
 
     def unique_id(field, block)
-      const_set('BLOCK', block)
-      const_set('FIELD', field)
+      const_set('UNIQUE_IDENTIFIER_FIELD', field)
+      const_set('UNIQUE_IDENTIFIER_BLOCK', block)
+
       before_validation :generate_unique_id, on: :create
     end
 
@@ -17,14 +19,18 @@ module UniqueIdentifier
 
   module InstanceMethods
     def generate_unique_id
-      return if self.send(self.class::FIELD)
+      klass       = self.class
+      klass_field = klass.const_get('UNIQUE_IDENTIFIER_FIELD')
+      klass_block = klass.const_get('UNIQUE_IDENTIFIER_BLOCK')
+      return if self.send(klass_field)
+
       identifier = loop do
-        random = self.class::BLOCK.call
-        unless self.class.base_class.exists?(self.class::FIELD => random)
+        random = klass_block.call
+        unless klass.base_class.exists?(klass_field => random)
           break random
         end
       end
-      self.send "#{self.class::FIELD}=", identifier
+      self.send "#{klass_field}=", identifier
     end
   end
 
