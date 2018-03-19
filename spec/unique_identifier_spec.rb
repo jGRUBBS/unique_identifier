@@ -33,10 +33,7 @@ describe UniqueIdentifier do
 
       context "when unique_id attribute +is not+ validated" do
         before do
-          DummyModel = build_dummy_class(
-            :number,
-            Proc.new { "R#{Array.new(9) { rand(9) }.join}" }
-          )
+          DummyModel = build_dummy_class(:number, basic_random_proc)
         end
 
         let(:model) { DummyModel.create }
@@ -48,11 +45,7 @@ describe UniqueIdentifier do
 
       context "when unique_id attribute +is+ validated" do
         before do
-          DummyModel = build_dummy_class(
-            :number,
-            Proc.new { "R#{Array.new(9) { rand(9) }.join}" },
-            validate: true
-          )
+          DummyModel = build_dummy_class(:number, basic_random_proc, validate: true)
         end
 
         let(:model) { DummyModel.create }
